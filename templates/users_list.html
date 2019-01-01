@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load user_tags %}
+{% block title %}{{ page_title }}{% endblock %}
+{% block head_link %}
+{% endblock %}
+{% block  main %}    
+    <div class="list">
+        <ol>
+        {% for user in users %}
+            {% if not user == userself %}
+                <li>
+                    <div class="userinfo">
+                       {% include 'include/userinfo.html'%}
+                    </div>
+                </li>
+            {% endif %}
+        {% endfor %}
+        </ol>
+        <div class="pagebar">
+            {{ page_bar|safe }}            
+        </div>
+    </div>
+{% endblock %}

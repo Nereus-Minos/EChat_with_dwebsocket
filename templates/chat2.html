@@ -1,0 +1,246 @@
+{% extends "base.html" %}
+{% load user_tags %}
+
+{% block  main %}
+    <style>
+        #main {
+            padding:0px 0px 10px 0px;
+        }
+        #container1 {
+            background:#D8D8D8;
+            position: relative;
+            box-shadow: 20px 20px 55px #777;
+        }
+        .header {
+            background: #000;
+            height: 6%;
+            color: #fff;
+            -webkit-user-select:none;
+            -moz-user-select:none;
+            -ms-user-select:none;
+            user-select:none;
+        }
+        .footer1 {
+            height: 8%;
+            background: #D8D8D8;
+        }
+        .footer1 input {
+            font-size: 8px;
+            width: 75%;
+            height: 80%;
+            border-radius: 6px;
+            right: 10px;
+            position: relative;
+            top: 0px;
+            left: 2px;
+        }
+        .footer1 #chat-message-submit {
+
+            display: inline-block;
+            width: 20%;
+            height: 90%;
+            background: #ccc;
+            cursor: pointer;
+            text-align: center;
+            right: 10px;
+            border-radius: 6px;
+            position: relative;
+            top: 1px;
+            left: 5px;
+        }
+        .footer1 span:hover {
+            color: #fff;
+            background: #999;
+        }
+        .content {
+            font-size: 8px;
+            width: 100%;
+            height: 86%;
+            overflow: auto;
+            padding: 2px;
+        }
+        .content li {
+            width: 90%;
+            margin-top: 2px;
+            padding-left: 2px;
+            display: block;
+            clear: both;
+            overflow: hidden;
+        }
+        <!--.content li img {-->
+            <!--width: 10%;-->
+            <!--float: left;-->
+        <!--}-->
+        .content li span{
+            width: 90%;
+            word-wrap:break-word;
+            background: #7cfc00;
+            padding: 2px;
+            border-radius: 10px;
+            float: left;
+            margin: 2px 0 2px 0px;
+            border: 1px solid #ccc;
+            box-shadow: 0 0 3px #ccc;
+        }
+        <!--.content li span.spanleft {-->
+            <!--float: left;-->
+            <!--background: #fff;-->
+        <!--}-->
+        <!--.content li span.spanright {-->
+            <!--float: right;-->
+            <!--background: #7cfc00;-->
+        <!--}-->
+    </style>
+    <script>
+
+        function getNow(s) {
+            return s < 10 ? '0' + s: s;
+        }
+
+        function GetTime() {
+            <!--显示时间-->
+            var myDate = new Date();
+            var year=myDate.getFullYear();
+            //获取当前月
+            var month=myDate.getMonth()+1;
+            //获取当前日
+            var date=myDate.getDate();
+            var h=myDate.getHours();       //获取当前小时数(0-23)
+            var m=myDate.getMinutes();     //获取当前分钟数(0-59)
+            var s=myDate.getSeconds();
+
+            var dataspan = document.querySelector('.header').querySelector('#rightspan');
+
+            if(dataspan.innerHTML != ''){
+                dataspan.innerHTML == '';
+            }
+
+
+            dataspan.innerHTML = year+'-'+getNow(month)+"-"+getNow(date)+" "+getNow(h)+':'+getNow(m)+":"+getNow(s);
+
+        }
+
+        window.onload = function(){
+             <!--显示时间-->
+             $(function () {
+                  setInterval("GetTime()", 1000);
+              });
+
+
+              <!--返回-->
+             document.querySelector('.header').querySelector('#return').onclick = function(){
+                window.location.replace('/user/');
+             }
+
+
+            var roomName = document.querySelector('#room_name').value;
+            var chatSocket = new WebSocket(
+                "ws://" + window.location.host + "/ws/chat/" + roomName + "/");
+
+
+            var RHeight = window.screen.availHeight * 0.6;
+            $("#container1").height(RHeight);
+
+
+            <!--var arrIcon = ['http://www.xttblog.com/icons/favicon.ico','http://www.xttblog.com/wp-content/uploads/2016/03/123.png'];-->
+            var userface = document.querySelector('#user_face').value;
+            var friendface = document.querySelector('#friend_face').value;
+
+            var num = 0;     //控制头像改变
+            var iNow = -1;    //用来累加改变左右浮动
+            var text = document.querySelector('#chat-message-input');
+            var content = document.querySelector('#container1').querySelectorAll('ul')[0];
+
+            <!--var content = $("#container1 ul")[0];-->
+
+            var img = document.querySelector('#container1').querySelector('.content').querySelector('img');
+            var span = document.querySelector('#container1').querySelector('.content').querySelector('span')
+
+            chatSocket.onmessage = function(e) {
+                var data = JSON.parse(e.data);
+                var message = data['message'];
+                var is_read_mysql = data['is_read_mysql'];
+                if(is_read_mysql == 'yes'){
+                    for(var i = 0;i<message.length;i++){
+                        <!--# 判断是否为以前自己发的数据-->
+                        if(message[i][0]){
+                            $(".content").append('<li><img src="'+ userface +'" class="face16" style="float: right;"><span style="float: right;background: #7cfc00;">'+ message[i][1] +'</span></li>');
+                        }
+                        else{
+                            $(".content").append('<li><img src="'+ friendface +'" class="face16" style="float: left;"><span style="float: left;background: #fff;">'+ message[i][1] +'</span></li>');
+                        }
+                    }
+                }
+                else{
+                    var is_write = data['is_write'];
+                    <!--# 判断是否为以前自己发的数据-->
+                    if(is_write){
+                        $(".content").append('<li><img src="'+ userface +'" class="face16" style="float: right;"><span style="float: right;background: #7cfc00;">'+ message +'</span></li>');
+                    }
+                    else{
+                        $(".content").append('<li><img src="'+ friendface +'" class="face16" style="float: left;"><span style="float: left;background: #fff;">'+ message +'</span></li>');
+                    }
+                }
+
+                // 内容过多时,将滚动条放置到最底端
+                document.querySelector('#container1').querySelector('.content').scrollTop=content.scrollHeight;
+
+            };
+
+            chatSocket.onclose = function(e) {
+                console.error('Chat socket closed unexpectedly');
+            };
+
+            document.querySelector('#chat-message-input').focus();
+            document.querySelector('#chat-message-input').onkeyup = function(e) {
+                if (e.keyCode === 13) {  // enter, return
+                    document.querySelector('#chat-message-submit').click();
+                }
+            };
+
+
+            document.querySelector('#chat-message-submit').onclick = function(){
+                if(text.value ==''){
+                    alert('不能发送空消息');
+                }else {
+                    var message = text.value;
+
+                    chatSocket.send(JSON.stringify({
+                        'message': message,
+                        'own': {{ user_id }}
+                    }));
+
+                    text.value = '';
+
+                }
+            }
+        };
+    </script>
+
+
+    <div id="container1">
+        <div class="header">
+            <span id="return" style="float: left;cursor:pointer;">
+                <span style="float: left;font-size: 18px;position: relative;top:-2px;"><</span>
+                <span style="float: left;font-size: 8px;">{{username}}</span>
+            </span>
+            <span id="rightspan" style="float: right;font-size: 8px;"></span>
+
+
+        </div>
+        <ul class="content">
+  </ul>
+        <div class="footer1">
+            <input id="chat-message-input" type="text" placeholder="说点什么吧...">
+
+            <input type="hidden" id="room_name" value={{ room_name_json }}>
+
+            <input type="hidden" id="user_face" value={{ user_face|face16 }}>
+
+            <input type="hidden" id="friend_face" value={{ friend_face|face16 }}>
+
+            <input id="chat-message-submit" type="button" value="发送"/>
+        </div>
+    </div>
+{% endblock %}
+
