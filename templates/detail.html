@@ -6,7 +6,35 @@
 {% load user_tags %}
 {% block title %}{{ page_title }}{% endblock %}
 {% block main %}
-<div class="list">
+
+    <style>
+        #main {
+            padding:0px 10px 10px 10px;
+        }
+
+        #detail_go_back {
+            font-size:12px;
+            text-decoration: none;
+            color: #1E90FF;
+            padding:5px 5px 5px 5px;
+            position: relative;
+            top: 4px;
+            left: -12px;
+        }
+        #detail_go_back_span {
+            font-size:20px;
+            text-decoration: none;
+            color: #1E90FF;
+            position: relative;
+            top: 0px;
+            left: 0px;
+
+        }
+
+    </style>
+
+<a id="detail_go_back" href="{{ go_back_url }}"><span id="detail_go_back_span"><</span>返回</a>
+<div class="list" style="padding:7px 0px 0px 0px;">
     <ol>
     <li class="detail">
         <div class="face">

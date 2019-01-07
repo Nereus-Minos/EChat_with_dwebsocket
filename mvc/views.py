@@ -14,13 +14,14 @@ from django.shortcuts import get_object_or_404
 
 from django.views.decorators.csrf import csrf_exempt
 
+import itertools
+
 
 # Create your views here.
 # home view
 @csrf_exempt
 def index(request):
-    # return index_user(request, '')
-    _user_name = __user_name(request)
+    _user_name = ''
     return index_user(request, _user_name)
 
 
@@ -29,37 +30,15 @@ def index_user(request, _username):
     return index_user_page(request, _username, 1)
 
 
+def index_page(request, _page_index):
+    return index_user_page(request, '', _page_index)
+
+
 # user messages view and page
 def index_user_page(request, _username, _page_index):
     # get user login status
     _islogin = __is_login(request)
     _page_title = _('Home')
-
-    try:
-        # get post params
-        _message = request.POST['message']
-        _is_post = True
-    except (KeyError):
-        _is_post = False
-
-    # save message
-    if _is_post:
-        # check login
-        if not _islogin:
-            return HttpResponseRedirect('/signin/')
-
-        # save messages
-        (_category, _is_added_cate) = Category.objects.get_or_create(name=u'网页')
-
-        try:
-            _user = User.objects.get(id=__user_id(request))
-        except:
-            return HttpResponseRedirect('/signin/')
-
-        _note = Note(message=_message, category=_category, user=_user)
-        _note.save()
-
-        return HttpResponseRedirect('/user/' + _user.username)
 
     _userid = -1
     # get message list
@@ -67,6 +46,7 @@ def index_user_page(request, _username, _page_index):
     _last_item_index = PAGE_SIZE * int(_page_index)
 
     _login_user_friend_list = None
+
     if _islogin:
         # get friend messages if user is logined
         _login_user = User.objects.get(username=__user_name(request))
@@ -92,14 +72,14 @@ def index_user_page(request, _username, _page_index):
     else:
         # get all messages
         _user = None
-
-        if _islogin:
-            _query_users = [_login_user]
-            _query_users.extend(_login_user.friend.all())
-            _notes = Note.objects.filter(user__in=_query_users).order_by('-addtime')
-        else:
-            # can't get  message
-            _notes = []  # Note.objects.order_by('-addtime')
+        #
+        # if _islogin:
+        #     _query_users = [_login_user]
+        #     _query_users.extend(_login_user.friend.all())
+        #     _notes = Note.objects.filter(user__in=_query_users).order_by('-addtime')
+        #
+        # else:
+        _notes = Note.objects.all().order_by('-addtime')
 
     # page bar
     _page_bar = formatter.pagebar(_notes, _page_index, _username)
@@ -109,6 +89,13 @@ def index_user_page(request, _username, _page_index):
 
     # body content
     _template = loader.get_template('index.html')
+
+
+    _one_page_num = len(_notes)
+    if _one_page_num < 4:
+        _one_page_num_list = [i for i in range(4 - _one_page_num)]
+    else:
+        _one_page_num_list = ''
 
     _context = {
         'page_title': _page_title,
@@ -121,6 +108,8 @@ def index_user_page(request, _username, _page_index):
         'page_bar': _page_bar,
         'friends': _friends,
         'login_user_friend_list': _login_user_friend_list,
+        'one_page_num': _one_page_num,
+        'one_page_num_list': _one_page_num_list,
     }
 
     _output = _template.render(_context)
@@ -178,11 +167,11 @@ def signup(request):
     else:
         _state = {
             'success': False,
-            'message': _('Signup')
+            'message': _('注 册')
         }
 
     if (_state['success']):
-        return __result_message(request, _('Signup successed'), _('Your account was registed success.'))
+        return __result_message(request, _('注册成功！'), _('你的信息注册成功！'))
 
     _result = {
         'success': _state['success'],
@@ -197,7 +186,7 @@ def signup(request):
     # body content
     _template = loader.get_template('signup.html')
     _context = {
-        'page_title': _('Signup'),
+        'page_title': _('注册'),
         'state': _result,
     }
     _output = _template.render(_context)
@@ -214,34 +203,34 @@ def __do_signup(request, _userinfo):
     # check username exist
     if (_userinfo['username'] == ''):
         _state['success'] = False
-        _state['message'] = _('"Username" have not inputed.')
+        _state['message'] = _('用户名未输入！')
         return _state
 
     if (_userinfo['password'] == ''):
         _state['success'] = False
-        _state['message'] = _('"Password" have not inputed.')
+        _state['message'] = _('密码未输入！')
         return _state
 
     if (_userinfo['realname'] == ''):
         _state['success'] = False
-        _state['message'] = _('"Real Name" have not inputed.')
+        _state['message'] = _('真实姓名未输入！')
         return _state
 
     if (_userinfo['email'] == ''):
         _state['success'] = False
-        _state['message'] = _('"Email" have not inputed.')
+        _state['message'] = _('邮箱未输入！')
         return _state
 
     # check username exist
     if (__check_username_exist(_userinfo['username'])):
         _state['success'] = False
-        _state['message'] = _('"Username" have existed.')
+        _state['message'] = _('用户名已经存在！')
         return _state
 
         # check password & confirm password
     if (_userinfo['password'] != _userinfo['confirm']):
         _state['success'] = False
-        _state['message'] = _('"Confirm Password" have not match.')
+        _state['message'] = _('确认密码不匹配！')
         return _state
 
     _user = User(
@@ -254,7 +243,7 @@ def __do_signup(request, _userinfo):
     # try:
     _user.save()
     _state['success'] = True
-    _state['message'] = _('Successed.')
+    _state['message'] = _('成功！')
     # except:
     # _state['success'] = False
     # _state['message'] = '程序异常,注册失败.'
@@ -324,7 +313,7 @@ def signin(request):
     else:
         _state = {
             'success': False,
-            'message': _('Please login first.')
+            'message': _('请先登录！')
         }
 
     # body content
@@ -467,7 +456,8 @@ def settings(request):
         # get post params
         _userinfo = {
             'realname': request.POST['realname'],
-            'url': request.POST['url'],
+            'password': request.POST['password'],
+            'confirm_password': request.POST['confirm_password'],
             'email': request.POST['email'],
             'face': request.FILES.get('face', None),
             "about": request.POST['about'],
@@ -482,23 +472,27 @@ def settings(request):
 
     # save user info
     if _is_post:
-        _user.realname = _userinfo['realname']
-        _user.url = _userinfo['url']
-        _user.email = _userinfo['email']
-        _user.about = _userinfo['about']
-        _file_obj = _userinfo['face']
-        # try:
-        if _file_obj:
-            _upload_state = uploader.upload_face(_file_obj)
-            if _upload_state['success']:
-                _user.face = _upload_state['message']
-            else:
-                return __result_message(request, _('Error'), _upload_state['message'])
+        if _userinfo['password'] == _userinfo['confirm_password']:
+            _user.realname = _userinfo['realname']
+            _user.email = _userinfo['email']
+            _user.about = _userinfo['about']
+            _file_obj = _userinfo['face']
+            if _file_obj:
+                _upload_state = uploader.upload_face(_file_obj)
+                if _upload_state['success']:
+                    _user.face = _upload_state['message']
+                else:
+                    return __result_message(request, _('Error'), _upload_state['message'])
 
-        _user.save(False)
-        _state['message'] = _('Successed.')
-        # except:
-        # return __result_message(request,u'错误','提交数据时出现异常，保存失败。')
+            if _userinfo['password'] != '':
+                _user.password = _userinfo['password']
+                _user.save(True)
+                _state['message'] = _('保存成功，密码已修改！')
+            else:
+                _user.save(False)
+                _state['message'] = _('保存成功，密码未修改！')
+        else:
+            _state['message'] = _('密码与确认密码不匹配！')
 
     # body content
     _template = loader.get_template('settings.html')
@@ -523,7 +517,6 @@ def users_list(request, _page_index=1):
     _islogin = __is_login(request)
 
     _page_title = _('Everyone')
-    _users = User.objects.order_by('-addtime')
 
     _login_user = None
     _login_user_friend_list = None
@@ -531,8 +524,16 @@ def users_list(request, _page_index=1):
         try:
             _login_user = User.objects.get(id=__user_id(request))
             _login_user_friend_list = _login_user.friend.all()
+
+            # 使自己排在第一位
+            # _users = User.objects.order_by('-addtime').exclude(id=__user_id(request))
+            _users = User.objects.order_by('-addtime')
         except:
             _login_user = None
+
+    else:
+        _users = User.objects.order_by('-addtime')
+
 
     # page bar
     _page_bar = formatter.pagebar(_users, _page_index, '', 'control/userslist_pagebar.html', islogin=_islogin)
@@ -547,6 +548,12 @@ def users_list(request, _page_index=1):
     # body content
     _template = loader.get_template('users_list.html')
 
+    _one_page_num = len(_users)
+    if _one_page_num < 4:
+        _one_page_num_list = [i for i in range(4 - _one_page_num)]
+    else:
+        _one_page_num_list = ''
+
     _context = {
         'page_title': _page_title,
         'users': _users,
@@ -555,6 +562,8 @@ def users_list(request, _page_index=1):
         'islogin': _islogin,
         'userid': __user_id(request),
         'page_bar': _page_bar,
+        'one_page_num': _one_page_num,
+        'one_page_num_list': _one_page_num_list,
     }
 
     _output = _template.render(_context)
@@ -569,6 +578,8 @@ def detail(request, _id):
 
     _note = get_object_or_404(Note, id=_id)
 
+    _go_back_url = function.get_referer_url(request)
+
     # body content
     _template = loader.get_template('detail.html')
 
@@ -577,6 +588,7 @@ def detail(request, _id):
         'item': _note,
         'islogin': _islogin,
         'userid': __user_id(request),
+        'go_back_url': _go_back_url,
     }
 
     _output = _template.render(_context)
@@ -603,12 +615,11 @@ def detail_delete(request, _id):
 
 # user messages view by self
 # 好友，需要改进
-def index_user_self(request, _page_index=1):
+def friends_list(request, _page_index=1):
     # check is login
     _islogin = __is_login(request)
 
-    _page_title = _('Everyone')
-    _users = User.objects.order_by('-addtime')
+    _page_title = _('Friends')
 
     _login_user = None
     _login_user_friend_list = None
@@ -619,28 +630,36 @@ def index_user_self(request, _page_index=1):
         except:
             _login_user = None
 
+
     # page bar
-    _page_bar = formatter.pagebar(_users, _page_index, '', 'control/userslist_pagebar.html', islogin=_islogin)
+    _page_bar = formatter.pagebar(_login_user_friend_list, _page_index, '', 'control/friendslist_pagebar.html', islogin=_islogin)
 
     # get message list
     _offset_index = (int(_page_index) - 1) * PAGE_SIZE
     _last_item_index = PAGE_SIZE * int(_page_index)
 
     # get current page
-    _users = _users[_offset_index:_last_item_index]
+    _login_user_friend_list = _login_user_friend_list[_offset_index:_last_item_index]
 
     # body content
     _template = loader.get_template('friends_list.html')
 
+    _one_page_num = len(_login_user_friend_list)
+    if _one_page_num < 4:
+        _one_page_num_list = [i for i in range(4 - _one_page_num)]
+    else:
+        _one_page_num_list = ''
+
     _context = {
         'page_title': _page_title,
-        'users': _users,
         'userself': _login_user,
         'login_user_friend_list': _login_user_friend_list,
         'islogin': _islogin,
         'userid': __user_id(request),
         'page_bar': _page_bar,
         'friends_list': True,
+        'one_page_num': _one_page_num,
+        'one_page_num_list': _one_page_num_list,
     }
 
     _output = _template.render(_context)
@@ -685,5 +704,120 @@ def friend_chat(request, _username):
 
     return HttpResponse(_output)
 
-    # return render(request, 'chat.html',
-    #               {'islogin': _islogin, 'room_name_json': _id})
+
+@csrf_exempt
+def handle_write_blog(request):
+    # get user login status
+    _islogin = __is_login(request)
+    try:
+        # get post params
+        _message = request.POST['message']
+        _is_post = True
+    except (KeyError):
+        _is_post = False
+
+    # check login
+    if not _islogin:
+        return HttpResponseRedirect('/signin/')
+
+    # save messages
+    (_category, _is_added_cate) = Category.objects.get_or_create(name=u'网页')
+
+    try:
+        _user = User.objects.get(id=__user_id(request))
+    except:
+        return HttpResponseRedirect('/signin/')
+
+    _note = Note(message=_message, category=_category, user=_user)
+    _note.save()
+
+    return HttpResponseRedirect('/user/' + _user.username)
+
+
+def write_blog(request, _username=''):
+    # check is login
+    _islogin = __is_login(request)
+
+    if (not _islogin):
+        return HttpResponseRedirect('/signin/')
+
+    ischat = True       # 去掉base页的头部
+    # body content
+    _template = loader.get_template('postform.html')
+
+    user = User.objects.get(username=__user_name(request))
+
+    _go_back_url = function.get_referer_url(request)
+
+    try:
+        search_content = request.path_info.split('/')[2]
+    except:
+        search_content = ''
+
+    _this_url = request.path_info
+
+    _context = {
+        'ischat': ischat,
+        'user': user,
+        'go_back_url': _go_back_url,
+        'search_content': search_content,
+        'this_url': _this_url,
+    }
+
+    _output = _template.render(_context)
+
+    return HttpResponse(_output)
+
+
+def searching(request):
+    # body content
+    _template = loader.get_template('searching.html')
+
+    _go_back_url = function.get_referer_url(request)
+
+    _context = {
+        'ischat': True,
+        'go_back_url': _go_back_url,
+    }
+
+    _output = _template.render(_context)
+
+    return HttpResponse(_output)
+
+
+@csrf_exempt
+def searching_handle(request):
+    if 'search_content' in request.POST:
+        search_content = request.POST['search_content']
+        go_back_url = request.POST['go_back_url']
+    else:
+        search_content = request.GET['search_content']
+        go_back_url = request.GET['go_back_url']
+
+    _islogin = __is_login(request)
+    _login_user = User.objects.get(username=__user_name(request))
+    _userid = _login_user.id
+
+
+    if search_content == '':
+        return __result_message(request, _message=_('请输入搜索内容！'), _go_back_url=go_back_url)
+
+    _searching_user = User.objects.filter(realname__contains=search_content)
+
+    _searching_notes = Note.objects.filter(message__contains=search_content)
+
+    # body content
+    _template = loader.get_template('search_result.html')
+
+    _context = {
+        'islogin': _islogin,
+        'userself': _login_user,
+        'userid': _userid,
+        'search_content': search_content,
+        'searching_user': _searching_user,
+        'searching_notes': _searching_notes,
+    }
+
+    _output = _template.render(_context)
+
+    return HttpResponse(_output)

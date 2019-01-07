@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% get_available_languages as LANGUAGES %}
+{% get_current_language_bidi as LANGUAGE_BIDI %}
+{% load user_tags %}
+{% load common_tags %}
+
+{% block  main %}
+
+    <style>
+
+    </style>
+
+    <!--用js控制点击搜索，进行搜索-->
+    <script>
+
+    </script>
+
+    <div class="list">
+        <ol>
+            <!--查询出来的用户-->
+            {% for user in searching_user %}
+                    <li>
+                        <div class="userinfo">
+                           <div class="face">
+                                <a href="{% url 'tmitter-mvc-views-index_user' user.username %}"><img src="{{ user.face|face32 }}" class="face32" /></a>
+                           </div>
+                            <ul class="right">
+                                <li> {{ user.realname }} </li>
+                                <li>
+                                    <span><a href="{% url 'tmitter-mvc-views-index_user' user.username %}" title="{% trans 'Open as new window.' %}"> 微 说 </a></span>
+                                    {% if islogin %}
+                                        {% if not user == userself %}
+                                            {% if user|in_list:login_user_friend_list %}
+                                                <span><a href="{% url 'tmitter-mvc-views-friend_remove' user.username %}" title="{% trans 'Remove friend' %} {{ user.realname }}"> 删除好友 </a></span>
+                                            {% else %}
+                                                <span><a href="{% url 'tmitter-mvc-views-friend_add' user.username %}" title="{{ user.realname }}"> 加好友 </a></span>
+                                            {% endif %}
+                                        {% else %}
+                                            <span><a href="{% url 'tmitter-mvc-views-write_blog' search_content %}" title="写微说"> 写微说 </a></span>
+                                        {% endif %}
+                                    {% endif %}
+
+                                </li>
+                                <li>{{ user.about }}</li>
+                            </ul>
+                        </div>
+                    </li>
+            {% endfor %}
+
+            <!--查询出来的微说-->
+            {% for item in searching_notes %}
+            <li>
+                <p class="message">
+
+                    <a  style="float:left;" href="{% url 'tmitter-mvc-views-index_user' item.user.username %}" class="name">
+                        <span class="face"><img src="{{ item.user.face|face16 }}" class="face16" /></span>
+                    </a>
+                        <div style="float:left;font-size:8px;height:16px;">
+                            <div style="height:8px;">{{ item.user.realname }}</div>
+                            <span class="date">{{ item.addtime|timesince }} 前,  </span>
+                            <span class="category">来自 {% trans item.category.name %}</span>
+                        </div>
+                    <br>
+                    <div style="margin:6px 0px 0 0px;">
+                        {{ item.message|urlize|slice:":10" }}... <a class="more" href="{% url 'tmitter-mvc-views-detail' item.id %}">全 文</a>
+                        {% if islogin %}
+                        {% ifequal userid item.user.id %}
+                        <span class="delete" style="float:right;"><a href="{% url 'tmitter-mvc-views-detail_delete' item.id %}">删 除</a></span>
+                        {% endifequal  %}
+                        {% endif %}
+                    </div>
+                <p>
+                <p class="info">
+
+            </p>
+
+            </li>
+            {% endfor %}
+
+
+           <!--&lt;!&ndash;控制一页中大小固定 &ndash;&gt;-->
+            <!--{% if one_page_num < 4 %}-->
+                <!--{% for i in one_page_num_list %}-->
+                    <!--<li>-->
+                        <!--<div class="userinfo">-->
+                           <!--&nbsp;-->
+                        <!--</div>-->
+                    <!--</li>-->
+                <!--{% endfor %}-->
+            <!--{% endif %}-->
+
+        </ol>
+        <!--<div class="pagebar">-->
+            <!--{{ page_bar|safe }}-->
+        <!--</div>-->
+    </div>
+
+{% endblock %}

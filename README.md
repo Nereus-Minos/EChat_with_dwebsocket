@@ -14,6 +14,13 @@ static:为静态文件存放文件；
 static/media:为上传文件；
 
 
+‘’’
+    首先插入一条地区的数据库insert into mvc_area (name,code,type,parent) values ('China','+86',0,0);
+
+‘’‘
+
+
+
 '''遇到CSRF验证失败. 请求被中断.'''
 
 1.在views.py中加from django.views.decorators.csrf import csrf_exempt，并在函数前面加@csrf_exempt
@@ -125,14 +132,10 @@ static/media:为上传文件；
 ''''网友们''''
 
 
-'''发布消息''''
+'''写微说''''
+调用函数write_blog.调用的模板是postform.html。通过handle_write_blog处理提交请求，显示用户个人微说主页
 
-调用的模板是postform.html
-显示发布消息的模板是list_item.html
-
-views.index_user_page函数 # 分页条显示的第几页
-
-'''发布消息''''
+'''写微说''''
 
 
 
@@ -184,3 +187,23 @@ views.index_user_page函数 # 分页条显示的第几页
 
 
 '''聊天'''
+
+
+
+'''
+    # test:获取用户ip
+    if 'HTTP_X_FORWARDED_FOR' in request.META:
+        ip = request.META[HTTP_X_FORWARDED_FOR]
+    else:
+        ip = request.META['REMOTE_ADDR']
+    print(ip)
+    print('*'*30)
+'''
+
+
+'''搜索'''
+点击head的伪输入框，调用searching函数，跳转到searching.html页面，提交后调用searching_handle函数。
+(注意：在取名字时不能用handle_search来命名views函数)
+如果输入框为空则返回搜索之前的页面。
+
+'''搜索'''

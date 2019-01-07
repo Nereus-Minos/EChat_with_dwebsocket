@@ -5,24 +5,25 @@ body { background:#234F32; overflow:hidden; font-size:12px; line-height:150%; te
 
 #container{ width:220px; border:1px solid #CEE6B0; overflow:hidden;  margin:5px auto; text-align:left; background:#F8F8F8;}
 
-#header { height:40px; background:#222222; padding:5px; }
-#header h1 { font-size:16px; margin-bottom:4px; }
-#header h1 img{ border:0; margin-bottom:-2px; margin-right:2px;}
-#header h1 a {color:#D0D0D0; font-size:12px; font-weight:bolder; text-decoration:none; border:none; margin:0; padding:0;}
+#header { height:40px; background:#D0D0D0; padding:0px; }
+#header h1 { font-size:6px; margin-bottom:0px; height:22px;}
+#header h1 #head_a1 img { margin:0 0px 0 0px; padding:0;height:22px;float:left;}
+#header h1 #head_a2 img { margin:0 5px 0 5px; padding:0;height:22px;float:right;}
+#header h1 input#search-input{ font-size: 9px; width:60%; margin-top:2px; text-align:left; color: #C0C0C0; border-radius: 4px; border-top:1px solid #C0C0C0;border-left:1px solid #C0C0C0;border-bottom:1px solid #C0C0C0;border-right:1px solid #C0C0C0; background:#FFFAFA;}
 #nav { list-style:none; font-size:12px;}
-#nav li { float:left; margin-right:4px;}
-#nav a:link,#nav a:visited { color:#D0D0D0; }
+#nav li { float:left; margin:0 5px 0 5px;}
+#nav a:link,#nav a:visited { color: #1E90FF; text-decoration: none;}
 #nav span{}
 
-#footer {margin:0px; font-size:8px; color:#D0D0D0; text-align:center; border-top:1px solid #D0D0D0; line-height:18px; background:#222222; clear:both; }
-#footer a { color:#D0D0D0;}
+#footer {margin:0px; font-size:8px; color: #888888; text-align:center; border-top:1px solid #D0D0D0; line-height:18px; background:#D0D0D0; clear:both; }
+#footer a { color: #888888;}
 
 #main { padding:10px;background: #E8E8E8;}
-#main a:link,#main a:visited{ color:#008881;}
+#main a:link,#main a:visited{ color:#008881; }
 #main h5 { font-size:12px; font-weight:bold;}
 #main .list { margin:0;}
 #main .list ol { list-style:none; list-style-position:outside;}
-#main .list ol li { padding:5px 0; border-bottom:1px solid #DDD; color:#444; clear:both; }
+#main .list ol li { padding:0 0 5px 0; border-bottom:1px solid #DDD; color:#444; clear:both; }
 #main .list ol li .message { }
 #main .list ol li .message .more {margin-left:2px;}
 #main .list ol li .info {display:block; text-align:right;color:#999;}
@@ -35,7 +36,7 @@ body { background:#234F32; overflow:hidden; font-size:12px; line-height:150%; te
 #main .list .detail .face { width:45px; overflow:hidden;text-align:center; height:50px;}
 #main .list .detail .face p.name { line-height:24px; }
 #main .list .detail .right { margin-left:48px; width:150px; margin-top:-52px;}
-#main .userinfo { padding-bottom:5px; border-bottom:1px solid #DDD; margin-bottom:5px; height:50px;}
+#main .userinfo { padding-bottom:0px; border-bottom:1px solid #DDD; margin-bottom:1px; height:40px;}
 #main .userinfo .face { width:32px;}
 #main .userinfo .right { margin-left:50px; width:120px; margin-top:-25px; list-style:none; }
 #main .userinfo .right li { line-height:normal; border:none; padding:0;}
@@ -47,17 +48,16 @@ body { background:#234F32; overflow:hidden; font-size:12px; line-height:150%; te
 
 
 .form { margin:0px;}
-.form table {width:100%; }
-.form table tr td { padding:2px;}
-.form table tr td.field { width:70px; text-align:right;}
-.form input.text,.form textarea.text  {font-size:12px; border-top:1px solid #aaa;border-left:1px solid #aaa;border-bottom:1px solid #ddd;border-right:1px solid #ddd; padding:2px; }
-.form button.submit { font-size:12px; border-top:1px solid #C9E3A8;border-left:1px solid #C9E3A8;border-bottom:1px solid #73A635;border-right:1px solid #73A635; height:22px; line-height:22px; padding:0 3px; background:#89C342; color:#333;}
+.form table {width:100%; table-layout:fixed;}
+.form table tr td { padding:2px;font-size:10px;}
+.form table tr td.field { width:45px; text-align:right;}
+.form input.text,.form textarea.text  {font-size:10px; border-top:1px solid #aaa;border-left:1px solid #aaa;border-bottom:1px solid #ddd;border-right:1px solid #ddd; padding:2px; }
+.form button.submit { font-size:12px; border-top:0px solid #C9E3A8;border-left:0px solid #C9E3A8;border-bottom:0px solid #73A635;border-right:0px solid #73A635; height:22px; line-height:22px; padding:0 3px; background:transparent; color:#333;}
 .form button.wide {padding:0px 10px;}
 
 #post-message { border-bottom:1px solid #DDD; padding-bottom:8px;}
-#post-message .input { padding-bottom:3px; }
-#post-message .input textarea { width:195px; overflow:hidden;}
-#post-message .buttons { text-align:left;}
+#post-message .input { padding-bottom:3px; margin: 0 2px 0 2px;}
+#post-message .input textarea { width:100%; overflow:hidden;padding:0px;}
 
 .face16 { width:16px; height:16px; border:none; margin:1px; display:inline-block; margin-bottom:-3px;}
 .face24 { width:24px; height:24px; border:none; margin:1px; display:inline-block; margin-bottom:-10px;}

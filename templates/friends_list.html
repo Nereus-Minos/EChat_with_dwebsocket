@@ -7,15 +7,26 @@
 {% block  main %}
     <div class="list">
         <ol>
-        {% for user in users %}
-            {% if user|in_list:login_user_friend_list %}
-                <li>
-                    <div class="userinfo">
-                       {% include 'include/userinfo.html'%}
-                    </div>
-                </li>
+            {% for user in login_user_friend_list %}
+                    <li>
+                        <div class="userinfo">
+                           {% include 'include/userinfo.html'%}
+                        </div>
+                    </li>
+            {% endfor %}
+
+
+           <!--控制一页中大小固定 -->
+            {% if one_page_num < 4 %}
+                {% for i in one_page_num_list %}
+                    <li>
+                        <div class="userinfo">
+                           &nbsp;
+                        </div>
+                    </li>
+                {% endfor %}
             {% endif %}
-        {% endfor %}
+
         </ol>
         <div class="pagebar">
             {{ page_bar|safe }}

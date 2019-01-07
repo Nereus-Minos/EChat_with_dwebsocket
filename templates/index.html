@@ -14,26 +14,26 @@
 {% endblock %}
 
 {% block  main %}
-    {% if user %}        
-        <div class="userinfo">
-            {% include 'include/userinfo.html' %}
-        </div>
-    {% else %}
-        {% include 'include/postform.html' %}
-    {% endif %}
-    {% if islogin %}
-        {% if self_home %}
-            {% include 'include/postform.html' %}
-        {% endif %}
-    {% endif %}
 
     <div class="list">
        <ol>
-        {% for item in notes %}
-        <li>
-            {% include 'include/list_item.html' %}
-        </li>
-        {% endfor %}
+            {% for item in notes %}
+            <li>
+                {% include 'include/list_item.html' %}
+            </li>
+            {% endfor %}
+
+           <!--控制一页中大小固定 -->
+            {% if one_page_num < 4 %}
+                {% for i in one_page_num_list %}
+                    <li>
+                        <div class="userinfo">
+                           &nbsp;
+                        </div>
+                    </li>
+                {% endfor %}
+            {% endif %}
+
         </ol>
         <div class="pagebar">
             <!--过滤器safe：禁用转义，告诉模板这个变量是安全的，可以解释执行。-->
@@ -47,16 +47,4 @@
            <!--</a>-->
         </div>
     </div>
-
-             
-    {% if user %}
-    <div class="friends">
-        <h3>{{user.realname}}{% trans '"s friends' %}</h3>
-        <div class="list">
-        {% for friend in friends %}
-        <a href="{% url 'tmitter-mvc-views-index_user' friend.username %}" title="{{ friend.realname }}"><img src="{{ friend.face|face16 }}" alt="{{ friend.realname }}" class="face16" /></a>
-        {% endfor %}
-        </div>
-    </div>
-    {% endif %}
 {% endblock %}

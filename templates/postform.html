@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% get_available_languages as LANGUAGES %}
+{% get_current_language_bidi as LANGUAGE_BIDI %}
+
+{% load user_tags %}
+
+{% block  main %}
+    <style>
+        #main {
+            padding:0px 0px 10px 0px;
+        }
+    </style>
+
+<div id="post-message" class="form">
+    <form method="post" action="/handle_write_blog/">
+        {% csrf_token %}
+        <table cellpadding="0" cellspacing="0">
+            <tr>
+                <td align="left" width="30%">
+                    {% if go_back_url != 'http://127.0.0.1:8000/searching_handle/' %}
+                        <a href="{{ go_back_url }}" style="font-size:25px; text-decoration: none; color: #1E90FF;"> < </a>
+                    {% else %}
+                        <a href="{{ go_back_url }}?search_content={{ search_content }}&go_back_url={{ this_url }}" style="font-size:25px; text-decoration: none; color: #1E90FF;"> < </a>
+                    {% endif %}
+                </td>
+                <td align="center" width="33%">
+                    <img src="{{ user.face|face16 }}" class="face16"/>
+                </td>
+                <td align="right" >
+                    <button type="submit" class="submit wide" style="color: #1E90FF;"> 提 交 </button>
+                </td>
+            </tr>
+        </table>
+        <div class="input">
+            <textarea name="message" class="text" rows="15" placeholder="分享新鲜事..."></textarea>
+        </div>
+
+    </form>
+</div>
+{% endblock %}

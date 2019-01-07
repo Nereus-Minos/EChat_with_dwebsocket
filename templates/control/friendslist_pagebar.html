@@ -7,12 +7,12 @@
     {% ifequal page_index 1 %}
          首 页
     {% else %}
-        <a href="{% url 'tmitter.mvc.views.index_user_page' username 1 %}"> 首 页 </a>
+        <a href="{% url 'tmitter.mvc.views.friends_list' 1 %}"> 首 页 </a>
     {% endifequal %}
     </span>
     <span class="prev">
     {% if has_prev %}
-        <a href="{% url 'tmitter.mvc.views.index_user_page' username page_prev %}"> 前一页 </a>
+        <a href="{% url 'tmitter.mvc.views.friends_list' page_prev %}"> 前一页 </a>
     {% else %}
          前一页
     {% endif %}
@@ -20,17 +20,21 @@
     <span class="page">{{ page_index }}/{{ page_count }}</span>
     <span class="next">
     {% if has_next %}
-        <a href="{% url 'tmitter.mvc.views.index_user_page' username page_next %}"> 下一页 </a>
+        <a href="{% url 'tmitter.mvc.views.friends_list' page_next %}"> 下一页 </a>
     {% else %}
-         下一页
+         后一页
     {% endif %}
     </span>
     <span class="last">
     {% ifequal page_index page_count %}
          尾 页
     {% else %}
-        <a href="{% url 'tmitter.mvc.views.index_user_page' username page_count %}"> 尾 页 </a>
+        <a href="{% url 'tmitter.mvc.views.friends_list' page_count %}"> 尾 页 </a>
     {% endifequal %}
     </span><br />
-    <span class="tip">总 共： {{ row_count }}  条 </span>
+    {% if islogin %}
+        <span class="tip">总 共： {{ row_count }} 用 户 </span>
+    {% else %}
+        <span class="tip">总 共： {{ row_count }} 用 户 </span>
+    {% endif %}
 {% endspaceless %}

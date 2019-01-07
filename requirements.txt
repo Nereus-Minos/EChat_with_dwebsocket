@@ -1,3 +1,11 @@
 django
 mysql
 gettext     # 电脑里有安装包
+
+channels       2.1.0
+channels-redis 2.3.2
+
+Pillow
+PyMySQL
+asgi-redis     1.4.3
+asgiref==2.3.2

@@ -8,20 +8,22 @@
     <a href="{% url 'tmitter-mvc-views-index_user' user.username %}"><img src="{{ user.face|face32 }}" class="face32" /></a>
 </div>
 <ul class="right">
-    <li>{% trans 'Name' %}:{{ user.realname }}</li>
+    <li> {{ user.realname }} </li>
     <li>
-        <span><a href="{% url 'tmitter-mvc-views-index_user' user.username %}" target="_blank" title="{% trans 'Open as new window.' %}">{% trans 'Blog' %}</a></span>
+        <span><a href="{% url 'tmitter-mvc-views-index_user' user.username %}" title="{% trans 'Open as new window.' %}"> 微 说 </a></span>
 		{% if islogin %}
 			{% if not user == userself %}
 				{% if friends_list %}
-					<span><a href="{% url 'tmitter-mvc-views-friend_chat' user.username %}" title="{{ user.realname }}">Chat</a></span>
+					<span><a href="{% url 'tmitter-mvc-views-friend_chat' user.username %}" title="{{ user.realname }}"> 聊 天 </a></span>
 				{% else %}
 					{% if user|in_list:login_user_friend_list %}
-						<span><a href="{% url 'tmitter-mvc-views-friend_remove' user.username %}" title="{% trans 'Remove friend' %} {{ user.realname }}">{% trans 'Unfollow' %}</a></span>
+						<span><a href="{% url 'tmitter-mvc-views-friend_remove' user.username %}" title="{% trans 'Remove friend' %} {{ user.realname }}"> 删除好友 </a></span>
 					{% else %}
-						<span><a href="{% url 'tmitter-mvc-views-friend_add' user.username %}" title="{{ user.realname }}">{% trans 'Follow' %}</a></span>
+						<span><a href="{% url 'tmitter-mvc-views-friend_add' user.username %}" title="{{ user.realname }}"> 加好友 </a></span>
 					{% endif %}
 				{% endif %}
+			{% else %}
+				<span><a href="{% url 'tmitter-mvc-views-write_blog' userself.username %}" title="写微说"> 写微说 </a></span>
 			{% endif %}
 		{% endif %}
     </li>

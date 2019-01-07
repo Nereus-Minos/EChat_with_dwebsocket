@@ -61,6 +61,8 @@ def pagebar(objects, page_index, username='', tempate='control/home_pagebar.html
     
     if(username):
         tempate = 'control/user_pagebar.html'
+
+
     
     return render_to_response(tempate, {
         'islogin': islogin,
