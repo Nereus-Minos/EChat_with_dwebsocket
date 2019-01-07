@@ -33,6 +33,14 @@
 
     </style>
 
+    <script>
+        $(function() {
+            var RHeight = window.screen.availHeight * 0.49;
+            $(".list").height(RHeight);
+
+        });
+    </script>
+
 <a id="detail_go_back" href="{{ go_back_url }}"><span id="detail_go_back_span"><</span>返回</a>
 <div class="list" style="padding:7px 0px 0px 0px;">
     <ol>
@@ -62,4 +70,5 @@
     </li>
     </ol>
 </div>
+
 {% endblock %}

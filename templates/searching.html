@@ -64,6 +64,8 @@
     <script>
         $(function() {
             $('#home-input').focus();
+            var RHeight = window.screen.availHeight * 0.58;
+            $("#searching_div_none").height(RHeight);
         });
 
     </script>
@@ -76,6 +78,6 @@
         <input id="search" type="submit" value="搜索"/>
         <input type="hidden" value={{ go_back_url }} name="go_back_url">
     </form>
-<div style="height:200px;">&nbsp;</div>
+<div id="searching_div_none">&nbsp;</div>
 
 {% endblock %}

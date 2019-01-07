@@ -9,15 +9,40 @@
 {% block  main %}
 
     <style>
+        #main {
+            padding:0px 10px 10px 10px;
+        }
 
+        #detail_go_back {
+            font-size:12px;
+            text-decoration: none;
+            color: #1E90FF;
+            padding:5px 5px 5px 5px;
+            position: relative;
+            top: 0px;
+            left: -12px;
+        }
+        #detail_go_back_span {
+            font-size:20px;
+            text-decoration: none;
+            color: #1E90FF;
+            position: relative;
+            top: 0px;
+            left: 0px;
     </style>
 
     <!--用js控制点击搜索，进行搜索-->
     <script>
+        $(function() {
+            var RHeight = window.screen.availHeight * 0.49;
+            $("#search_result_div").height(RHeight);
 
+        });
     </script>
 
-    <div class="list">
+    <a id="detail_go_back" href="{{ go_back_url }}"><span id="detail_go_back_span"><</span>返回</a>
+
+    <div class="list" id="search_result_div">
         <ol>
             <!--查询出来的用户-->
             {% for user in searching_user %}

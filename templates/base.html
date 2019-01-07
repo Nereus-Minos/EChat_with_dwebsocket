@@ -17,6 +17,7 @@
 
     <script type="text/javascript" src="/static/js/jquery-3.3.1.min.js"></script>
     <script type="text/javascript">
+
         $(function() {
             if(document.querySelector('#search-input')){
                 document.querySelector('#search-input').onclick = function(){
@@ -28,16 +29,18 @@
             var rHeight = $(document).height() / 34;
             //alert(rHeight+","+ rWidth);
             $(document.body).css("zoom",Math.min(rWidth, rHeight));
-            });
+            // alert(rHeight+","+ rWidth);
+
             $(window).resize(function() {
-            //var rWidth = window.screen.availWidth / 200.0;
-            ///var rHeight = window.screen.availHeight / 320.0;
-            //alert(rHeight+","+ rWidth);
+                // var rWidth = window.screen.availWidth;
+                // /var rHeight = window.screen.availHeight;
+                //alert(rHeight+","+ rWidth);
 
-            var rWidth = $(document).width() / 230.0;
-            var rHeight = $(document).height() / 34;
-            $(document.body).css("zoom",Math.min(rWidth, rHeight));
-
+                var rWidth = $(document).width() / 230.0;
+                var rHeight = $(document).height() / 34;
+                //alert(rHeight+","+ rWidth);;
+                $(document.body).css("zoom",Math.min(rWidth, rHeight));
+            });
         });
     </script>
 

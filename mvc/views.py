@@ -795,8 +795,13 @@ def searching_handle(request):
         go_back_url = request.GET['go_back_url']
 
     _islogin = __is_login(request)
-    _login_user = User.objects.get(username=__user_name(request))
-    _userid = _login_user.id
+
+    _login_user = None
+    _userid = None
+
+    if _islogin:
+        _login_user = User.objects.get(username=__user_name(request))
+        _userid = _login_user.id
 
 
     if search_content == '':
@@ -816,6 +821,7 @@ def searching_handle(request):
         'search_content': search_content,
         'searching_user': _searching_user,
         'searching_notes': _searching_notes,
+        'go_back_url': go_back_url,
     }
 
     _output = _template.render(_context)
