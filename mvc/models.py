@@ -105,6 +105,7 @@ class Note(models.Model):
     id = models.AutoField(
         primary_key=True
     )
+    heads = models.CharField('消息头', max_length=200)
     message = models.TextField('消息')
     addtime = models.DateTimeField('发布时间', auto_now=True)
     category = models.ForeignKey(Category, verbose_name='来源', on_delete=models.CASCADE)
@@ -125,11 +126,11 @@ class Note(models.Model):
     def user_name(self):
         return self.user.realname
 
-    def save(self):
-        self.message = formatter.content_tiny_url(self.message)
-        self.message = html.escape(self.message)
-        self.message = formatter.substr(self.message, 140)
-        super(Note, self).save()
+    # def save(self):
+    #     # self.message = formatter.content_tiny_url(self.message)
+    #     # # self.message = html.escape(self.message)      # 转义
+    #     # self.message = formatter.substr(self.message, 140)
+    #     # super(Note, self).save()
 
     class Meta:
         verbose_name = u'消息'

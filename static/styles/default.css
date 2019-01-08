@@ -35,7 +35,7 @@ body { background:#F0F0F0; overflow:hidden; font-size:12px; line-height:150%; te
 #main .list .detail { clear:both;}
 #main .list .detail .face { width:45px; overflow:hidden;text-align:center; height:50px;}
 #main .list .detail .face p.name { line-height:24px; }
-#main .list .detail .right { margin-left:48px; width:150px; margin-top:-52px;}
+#main .list .detail .right { margin-left:48px; margin-top:-52px;}
 #main .userinfo { padding-bottom:0px; border-bottom:1px solid #DDD; margin-bottom:1px; height:40px;}
 #main .userinfo .face { width:32px;}
 #main .userinfo .right { margin-left:50px; width:120px; margin-top:-25px; list-style:none; }

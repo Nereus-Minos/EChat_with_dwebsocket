@@ -15,7 +15,7 @@
         </div>
     <br>
     <div style="margin:6px 0px 0 0px;">
-        {{ item.message|urlize|slice:":10" }}... <a class="more" href="{% url 'tmitter-mvc-views-detail' item.id %}">全 文</a>
+        {{ item.heads|urlize|slice:":10" }}... <a class="more" href="{% url 'tmitter-mvc-views-detail' item.id %}">全 文</a>
         {% if islogin %}
         {% ifequal userid item.user.id %}
         <span class="delete" style="float:right;"><a href="{% url 'tmitter-mvc-views-detail_delete' item.id %}">删 除</a></span>

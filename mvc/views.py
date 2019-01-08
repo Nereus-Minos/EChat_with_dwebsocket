@@ -14,7 +14,7 @@ from django.shortcuts import get_object_or_404
 
 from django.views.decorators.csrf import csrf_exempt
 
-import itertools
+from PIL import Image
 
 
 # Create your views here.
@@ -712,6 +712,7 @@ def handle_write_blog(request):
     try:
         # get post params
         _message = request.POST['message']
+        _message_head = request.POST['message_head']
         _is_post = True
     except (KeyError):
         _is_post = False
@@ -728,7 +729,7 @@ def handle_write_blog(request):
     except:
         return HttpResponseRedirect('/signin/')
 
-    _note = Note(message=_message, category=_category, user=_user)
+    _note = Note(heads=_message_head, message=_message, category=_category, user=_user)
     _note.save()
 
     return HttpResponseRedirect('/user/' + _user.username)
@@ -827,3 +828,23 @@ def searching_handle(request):
     _output = _template.render(_context)
 
     return HttpResponse(_output)
+
+
+# 富文本编辑框处理上传图片
+@csrf_exempt
+def upload_img(request):
+    try:
+        file = request.FILES['image']
+
+        print(file)
+        print('*'*30)
+
+        img = Image.open(file)
+        try:
+            file_name = str(uuid.uuid1()).replace("-", "") + os.path.splitext(file.name)[1]
+            img.save(os.path.join(MEDIA_ROOT, "upload/", "imgs", file_name), img.format)
+            return HttpResponse(MEDIA_URL + 'upload/' + 'imgs/{0}'.format(file_name))
+        except Exception:
+            return HttpResponse("error")
+    except Exception:
+        return HttpResponse("error")

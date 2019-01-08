@@ -135,6 +135,82 @@ static/media:为上传文件；
 '''写微说''''
 调用函数write_blog.调用的模板是postform.html。通过handle_write_blog处理提交请求，显示用户个人微说主页
 
+在这里必须填写标题才能提交
+
+    '''采用富文本编辑器tinyMCE'''
+    （不用安装安装包）
+    1.引入必要js
+    从 https://www.tinymce.com/download/ 下载tinyMCE的社区版
+    从 https://www.tinymce.com/download/language-packages/ 下载汉化文件，放到langs目录中
+    2.在html中使用，并用ajax来控制图片上传
+    <script type="text/javascript" src='/static/js/tinymce.min.js'></script>
+    <script type="text/javascript">
+        tinyMCE.init({
+            selector: 'textarea',
+            theme: "modern",
+            plugins: "spellchecker,directionality,paste,image",
+            file_browser_callback_types: 'image',
+            file_picker_callback: function(callback, value, meta) {
+                if (meta.filetype === 'image') {
+                    var fileUploadControl = document.getElementById("imageFileUpload");
+                    fileUploadControl.click();
+                    fileUploadControl.onchange = function () {
+                        if (fileUploadControl.files.length > 0) {
+                            var localFile = fileUploadControl.files[0];
+                            if (/.(gif|jpg|jpeg|png|bmp)$/.test(localFile.name)){
+                                var formData = new FormData();
+                                formData.append("image", localFile);
+                                $.ajax({
+                                    url: '{% url 'upload_img' %}',
+                                    type: 'POST',
+                                    data: formData,
+                                    cache: false,
+                                    contentType: false,
+                                    processData: false,
+                                    success: function (data) {
+                                        callback(data, {alt: localFile.name});
+                                    },
+                                    error:function () {
+                                        alert('图片上传失败')
+                                    }
+                                });
+                            }
+                            else {
+                                alert('只能上传图片')
+                            }
+                        } else {
+                            alert('请选择图片上传')
+                        }
+                    }
+                }
+            },
+            convert_urls :false,
+            language: "zh_CN",
+            image_advtab: true,
+            paste_data_images:true
+        });
+    </script>
+    3.在views.py函数中添加处理图片相应的函数
+    from django.conf import settings
+    from django.views.decorators.csrf import csrf_exempt
+    from PIL import Image
+
+    @csrf_exempt
+    def report_upload(request):
+        try:
+            file = request.FILES['image']
+            img = Image.open(file)
+            try:
+                file_name = str(uuid.uuid1()).replace("-", "") + os.path.splitext(file.name)[1]
+                img.save(os.path.join(settings.MEDIA_ROOT, "imgs", file_name), img.format)
+                return HttpResponse(settings.MEDIA_URL + 'imgs/{0}'.format(file_name))
+            except Exception:
+                return HttpResponse("error")
+        except Exception:
+            return HttpResponse("error")
+    4.在views.py中的handle_write_blog函数中保存html代码，禁止转义
+
+
 '''写微说''''
 
 

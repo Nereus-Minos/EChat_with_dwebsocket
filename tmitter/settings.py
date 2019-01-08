@@ -25,7 +25,7 @@ SECRET_KEY = '#@f!gpu2bxru2t)_xb_738-9m!i)m5rki*bid1k8caiq@*2fh%'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
