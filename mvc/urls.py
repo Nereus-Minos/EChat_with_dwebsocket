@@ -18,7 +18,7 @@ urlpatterns = [
     url(r'^write_blog/(?P<_username>[a-zA-Z\-_\d\u4E00-\u9FA5]+)/$', views.write_blog, name="tmitter-mvc-views-write_blog"),  # 写微说
     url(r'^write_blog/$', views.write_blog),      # 写微说
     url(r'^handle_write_blog/$', views.handle_write_blog),      # 处理写微说函数
-    url(r'^upload_img/$', views.upload_img, name='upload_img'),      # 富文本编辑框
+    url(r'^upload_img/$', views.upload_user_img, name='upload_user_img'),      # 上传头像
 
     url(r'^message/(?P<_id>\d+)/$', views.detail, name="tmitter-mvc-views-detail"),     # 发布的空间信息详情
     url(r'^message/(?P<_id>\d+)/delete/$', views.detail_delete, name="tmitter-mvc-views-detail_delete"),        # 删除空间消息

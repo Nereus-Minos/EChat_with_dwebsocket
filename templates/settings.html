@@ -6,6 +6,43 @@
 {% load user_tags %}
 {% block title %}{{ page_title }}{% endblock %}
 {% block main %}
+
+    <script>
+        $(function() {
+
+            $("#editor_picture").on('click','#upload_images',function(){
+
+                $("#imageFileUpload").trigger("click");
+                $("#imageFileUpload").change(function(){
+                    var fileUploadControl = document.getElementById("imageFileUpload");
+                    var localFile = fileUploadControl.files[0];
+                    if (/.(gif|jpg|jpeg|png|bmp)$/.test(localFile.name)){
+                        var formData = new FormData();
+                        formData.append("image", localFile);
+                        $.ajax({
+                            url: '{% url 'upload_user_img' %}',
+                            type: 'POST',
+                            data: formData,
+                            cache: false,
+                            contentType: false,
+                            processData: false,
+                            success: function (data) {
+                                $("#user_face").attr("src",data);
+                            },
+                            error:function () {
+                                alert('图片上传失败')
+                            }
+                        });
+                    }
+                    else {
+                        alert('只能上传图片')
+                    }
+                });
+            });
+
+        });
+    </script>
+
 <div class="form">
     <div class="message">{{ state.message }}</div>
     <form action="{% url 'tmitter_mvc_views_settings' %}" method="post" enctype="multipart/form-data">
@@ -27,12 +64,12 @@
                 <td class="field">确认密码:</td>
                 <td><input type="text" name="confirm_password" class="text" size="20" /></td>
             </tr>
-            <tr>
+            <tr id="editor_picture">
                 <td class="field">头&nbsp;&nbsp;&nbsp;&nbsp;像:</td>
-                <td><img src="{{ user.face|face32 }}" class="face32" alt="{% trans 'My face' %}" /></td>
-                <td><input type="file" name="face" class="text" style="width:110px;font-size:10px;"/></td>
-                <td></td>
-                <td></td>
+                <td><img style="margin-right:5px;" src="{{ user.face|face24 }}" class="face24" alt="{% trans 'My face' %}" id="user_face"/>
+                <input type="button" value="上传头像" id="upload_images" style="font-size:10px;">
+                <input type="file" id="imageFileUpload" style="display: none" name="face">
+                </td>
             </tr>
             <tr>
                 <td class="field">个&nbsp;&nbsp;&nbsp;&nbsp;签:</td>
@@ -44,6 +81,6 @@
             </tr>
         </table>
     </form>
-    <div>&nbsp</div>
+    <div>&nbsp;</div>
 </div>
 {% endblock %}

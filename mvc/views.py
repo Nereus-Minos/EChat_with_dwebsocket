@@ -14,8 +14,6 @@ from django.shortcuts import get_object_or_404
 
 from django.views.decorators.csrf import csrf_exempt
 
-from PIL import Image
-
 
 # Create your views here.
 # home view
@@ -832,19 +830,20 @@ def searching_handle(request):
 
 # 富文本编辑框处理上传图片
 @csrf_exempt
-def upload_img(request):
+def upload_user_img(request):
     try:
         file = request.FILES['image']
 
-        print(file)
-        print('*'*30)
+        fname = '%sface_temporary/%s' % (MEDIA_ROOT, file.name)
+        #
+        # print(fname)
+        # print('*'*30)
 
-        img = Image.open(file)
-        try:
-            file_name = str(uuid.uuid1()).replace("-", "") + os.path.splitext(file.name)[1]
-            img.save(os.path.join(MEDIA_ROOT, "upload/", "imgs", file_name), img.format)
-            return HttpResponse(MEDIA_URL + 'upload/' + 'imgs/{0}'.format(file_name))
-        except Exception:
-            return HttpResponse("error")
+        with open(fname, 'wb') as pic:
+            for c in file.chunks():
+                pic.write(c)
+        return_url = '%sface_temporary/%s' % (MEDIA_URL, file.name)
+        return HttpResponse(return_url)
+
     except Exception:
         return HttpResponse("error")

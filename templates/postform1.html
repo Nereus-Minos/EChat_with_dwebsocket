@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% get_available_languages as LANGUAGES %}
+{% get_current_language_bidi as LANGUAGE_BIDI %}
+
+{% load user_tags %}
+
+{% block  main %}
+<script type="text/javascript" src='/static/js/tiny_mce.js'></script>
+    <script type="text/javascript">
+        tinyMCE.init({
+            'mode':'textareas',
+            theme: "modern",
+
+            menubar: "edit,insert,format,table",
+            plugins: "directionality,paste,emotions,table,image,imagtools,lists",
+            toolbar: "fontselect,fontsizeselect,align | charmap,hr | forecolor,backcolor | bold,italic,underline | numlist,bullist | image | emoticons",
+            fontsize_formats: "8pt 10pt 12pt 14pt 16pt 18pt 24pt 36pt",
+
+            file_browser_callback_types: 'image',
+            file_picker_callback: function(callback, value, meta) {
+                if (meta.filetype === 'image') {
+                    var fileUploadControl = document.getElementById("imageFileUpload");
+                    fileUploadControl.click();
+                    fileUploadControl.onchange = function () {
+                        if (fileUploadControl.files.length > 0) {
+                            var localFile = fileUploadControl.files[0];
+                            if (/.(gif|jpg|jpeg|png|bmp)$/.test(localFile.name)){
+                                var formData = new FormData();
+                                formData.append("image", localFile);
+                                $.ajax({
+                                    url: '{% url 'upload_img' %}',
+                                    type: 'POST',
+                                    data: formData,
+                                    cache: false,
+                                    contentType: false,
+                                    processData: false,
+                                    success: function (data) {
+                                        callback(data, {alt: localFile.name});
+                                    },
+                                    error:function () {
+                                        alert('图片上传失败')
+                                    }
+                                });
+                            }
+                            else {
+                                alert('只能上传图片')
+                            }
+                        } else {
+                            alert('请选择图片上传')
+                        }
+                    }
+                }
+            },
+            convert_urls :false,
+            language: "zh_CN",
+            image_advtab: true,
+            paste_data_images:true
+        });
+    </script>
+
+    <style>
+        #main {
+            padding:0px 0px 10px 0px;
+        }
+        #input_head{
+            font-size: 12px;
+            width:70%;
+            margin:0 0 5px 0px;
+            text-align:left;
+            color: #494949;
+            border-radius: 4px;
+            border-top:1px solid #C0C0C0;
+            border-left:1px solid #C0C0C0;
+            border-bottom:1px solid #C0C0C0;
+            border-right:1px solid #C0C0C0;
+            background:#fff;
+        }
+        #input_head_text{
+            font-size: 15px;
+            color: #494949;
+            margin:0 0 0px 5px;
+        }
+    </style>
+
+<div id="post-message" class="form">
+    <form method="post" action="/handle_write_blog/">
+        {% csrf_token %}
+        <table cellpadding="0" cellspacing="0">
+            <tr>
+                <td align="left" width="30%">
+                    {% if go_back_url != 'http://127.0.0.1:8000/searching_handle/' %}
+                        <a href="{{ go_back_url }}" style="font-size:25px; text-decoration: none; color: #1E90FF;"> < </a>
+                    {% else %}
+                        <a href="{{ go_back_url }}?search_content={{ search_content }}&go_back_url={{ this_url }}" style="font-size:25px; text-decoration: none; color: #1E90FF;"> < </a>
+                    {% endif %}
+                </td>
+                <td align="center" width="33%">
+                    <img src="{{ user.face|face16 }}" class="face16"/>
+                </td>
+                <td align="right" >
+                    <button type="submit" class="submit wide" style="color: #1E90FF;"> 提 交 </button>
+                </td>
+            </tr>
+        </table>
+        <div class="input">
+            <span id="input_head_text">标题：</span><input type="text" id="input_head" placeholder="&nbsp;&nbsp;请先填写文章标题..." name="message_head">
+            <textarea name="message"></textarea>
+        </div>
+        <input type="file" id="imageFileUpload" style="display: none">
+
+    </form>
+</div>
+{% endblock %}
