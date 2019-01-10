@@ -7,14 +7,14 @@
 {% load user_tags %}
 
 {% block  main %}
-<script type="text/javascript" src='/static/js/tiny_mce.js'></script>
+<script type="text/javascript" src='/static/js/tinymce.min.js'></script>
     <script type="text/javascript">
         tinyMCE.init({
             'mode':'textareas',
             theme: "modern",
 
             menubar: "edit,insert,format,table",
-            plugins: "directionality,paste,emotions,table,image,imagtools,lists",
+            plugins: "directionality,paste,emoticons,table,image,imagetools,lists",
             toolbar: "fontselect,fontsizeselect,align | charmap,hr | forecolor,backcolor | bold,italic,underline | numlist,bullist | image | emoticons",
             fontsize_formats: "8pt 10pt 12pt 14pt 16pt 18pt 24pt 36pt",
 
@@ -30,7 +30,7 @@
                                 var formData = new FormData();
                                 formData.append("image", localFile);
                                 $.ajax({
-                                    url: '{% url 'upload_img' %}',
+                                    url: '{% url 'upload_user_img' %}',
                                     type: 'POST',
                                     data: formData,
                                     cache: false,

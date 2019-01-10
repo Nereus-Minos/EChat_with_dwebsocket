@@ -51,7 +51,7 @@ body { background:#F0F0F0; overflow:hidden; font-size:12px; line-height:150%; te
 .form table {width:100%; table-layout:fixed;}
 .form table tr td { padding:2px;font-size:10px;}
 .form table tr td.field { width:45px; text-align:right;}
-.form input.text,.form textarea.text  {font-size:10px; border-top:1px solid #aaa;border-left:1px solid #aaa;border-bottom:1px solid #ddd;border-right:1px solid #ddd; padding:2px; }
+.form input.text  {font-size:10px; border-top:1px solid #aaa;border-left:1px solid #aaa;border-bottom:1px solid #ddd;border-right:1px solid #ddd; padding:2px; }
 .form button.submit { font-size:12px; border-top:0px solid #C9E3A8;border-left:0px solid #C9E3A8;border-bottom:0px solid #73A635;border-right:0px solid #73A635; height:22px; line-height:22px; padding:0 3px; background:transparent; color:#333;}
 .form button.wide {padding:0px 10px;}
 

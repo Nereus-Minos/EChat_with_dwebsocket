@@ -14,6 +14,9 @@ from django.shortcuts import get_object_or_404
 
 from django.views.decorators.csrf import csrf_exempt
 
+import datetime
+import json
+
 
 # Create your views here.
 # home view
@@ -169,7 +172,8 @@ def signup(request):
         }
 
     if (_state['success']):
-        return __result_message(request, _('注册成功！'), _('你的信息注册成功！'))
+        # return __result_message(request, _('注册成功！'), _('你的信息注册成功！'))
+        return signin(request)
 
     _result = {
         'success': _state['success'],
@@ -847,3 +851,23 @@ def upload_user_img(request):
 
     except Exception:
         return HttpResponse("error")
+
+
+# 富文本编辑中处理上传图片
+@csrf_exempt  # 取消csrf验证，否则会有403错误
+def upload_file(request, dir_name):
+    files = request.FILES.get('upload_file')  # 得到文件对象
+    today = datetime.datetime.today()
+
+    file_dir = MEDIA_ROOT + dir_name + '/upload_imgs' + '/%d/%d/%d/' % (today.year, today.month, today.day)
+    if not os.path.exists(file_dir):
+        os.makedirs(file_dir)
+    file_path = file_dir + files.name
+
+    open(file_path, 'wb+').write(files.read())  # 上传文件
+
+    # 得到JSON格式的返回值
+    upload_info = {"success": True, 'file_path': MEDIA_URL + files.name}
+    upload_info = json.dumps(upload_info)
+
+    return HttpResponse(upload_info, content_type="application/json")

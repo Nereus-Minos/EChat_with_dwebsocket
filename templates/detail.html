@@ -45,19 +45,19 @@
 <div class="list" style="padding:7px 0px 0px 0px;">
     <ol>
     <li class="detail">
-        <div class="face">
-            <p>
-                <a href="{% url 'tmitter-mvc-views-index_user' item.user.username %}">
-                <img src="{{ item.user.face|face32 }}" class="face32" />
-                </a>
-            </p>
-            <p class="name">
-                <a href="{% url 'tmitter-mvc-views-index_user' item.user.username %}" class="name">{{ item.user.realname }}</a>
-            </p>
-        </div>
-        <div class="right">
+        <!--<div class="face">-->
+            <!--<p>-->
+                <!--<a href="{% url 'tmitter-mvc-views-index_user' item.user.username %}">-->
+                <!--<img src="{{ item.user.face|face32 }}" class="face32" />-->
+                <!--</a>-->
+            <!--</p>-->
+            <!--<p class="name">-->
+                <!--<a href="{% url 'tmitter-mvc-views-index_user' item.user.username %}" class="name">{{ item.user.realname }}</a>-->
+            <!--</p>-->
+        <!--</div>-->
+        <div class="right" style="margin:10px 20px 10px 20px;">
             <p class="message"><h2 style="margin:0 0 5px 0;text-align:center;color:#ef1f15;">{{ item.heads }}</h2>{{ item.message|safe }}</p>
-            <div class="info">
+            <div class="info" style="margin-top:20px;">
                 <span class="date">{{ item.addtime|timesince }} {% trans 'ago' %}</span><br />
                 <span class="category">{% trans 'from' %} {{ item.category.name }}</span>
                 {% if islogin %}
@@ -66,7 +66,7 @@
                 {% endifequal  %}
                 {% endif %}
             </div>
-        <div>             
+        </div>
     </li>
     </ol>
 </div>

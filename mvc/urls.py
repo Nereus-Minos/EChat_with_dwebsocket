@@ -1,6 +1,7 @@
 from django.conf.urls import url
 from mvc import views
 
+
 urlpatterns = [
     url(r'^$', views.index),        # 主页
     url(r'^signup/$', views.signup),         # 注册
@@ -8,7 +9,10 @@ urlpatterns = [
     url(r'^signout/$', views.signout),        # 退出登录
     url(r'^friends_list/$', views.friends_list),     # 我的朋友
     url(r'^users/$', views.users_index),        # 网友们
+
     url(r'^settings/$', views.settings, name='tmitter_mvc_views_settings'),     # 个人中心设置
+    url(r'^upload_img/$', views.upload_user_img, name='upload_user_img'),      # 个人中心中上传头像
+
     url(r'^user/(?P<_username>[a-zA-Z\-_\d\u4E00-\u9FA5]+)/$', views.index_user, name="tmitter-mvc-views-index_user"),         # 用户微说信息首页
     url(r'^friend/add/(?P<_username>[a-zA-Z\-_\d\u4E00-\u9FA5]+)', views.friend_add, name="tmitter-mvc-views-friend_add"),       # 已登录用户信息,添加好友
     url(r'^friend/remove/(?P<_username>[a-zA-Z\-_\d\u4E00-\u9FA5]+)', views.friend_remove, name='tmitter-mvc-views-friend_remove'),       # 已登录信息，删除好友
@@ -18,7 +22,9 @@ urlpatterns = [
     url(r'^write_blog/(?P<_username>[a-zA-Z\-_\d\u4E00-\u9FA5]+)/$', views.write_blog, name="tmitter-mvc-views-write_blog"),  # 写微说
     url(r'^write_blog/$', views.write_blog),      # 写微说
     url(r'^handle_write_blog/$', views.handle_write_blog),      # 处理写微说函数
-    url(r'^upload_img/$', views.upload_user_img, name='upload_user_img'),      # 上传头像
+    url(r'^myadmin/upload/(?P<dir_name>)', views.upload_file),         # 处理富文本编辑起中的上传图像
+
+
 
     url(r'^message/(?P<_id>\d+)/$', views.detail, name="tmitter-mvc-views-detail"),     # 发布的空间信息详情
     url(r'^message/(?P<_id>\d+)/delete/$', views.detail_delete, name="tmitter-mvc-views-detail_delete"),        # 删除空间消息
