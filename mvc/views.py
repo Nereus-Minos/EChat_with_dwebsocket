@@ -17,6 +17,8 @@ from django.views.decorators.csrf import csrf_exempt
 import datetime
 import json
 
+from PIL import Image
+
 
 # Create your views here.
 # home view
@@ -863,11 +865,18 @@ def upload_file(request, dir_name):
     if not os.path.exists(file_dir):
         os.makedirs(file_dir)
     file_path = file_dir + files.name
-
     open(file_path, 'wb+').write(files.read())  # 上传文件
 
+    # 修改图片大小
+    im = Image.open(file_path)
+    (x, y) = im.size  # read image size
+    x_s = 50  # define standard width
+    y_s = int(y * x_s / x)  # calc height based on standard width
+    out = im.resize((x_s, y_s), Image.ANTIALIAS)  # resize image with high-quality
+    out.save(file_path)
+
     # 得到JSON格式的返回值
-    upload_info = {"success": True, 'file_path': MEDIA_URL + files.name}
+    upload_info = {"success": True, 'file_path': MEDIA_URL + '/upload_imgs' + '/%d/%d/%d/' % (today.year, today.month, today.day) + files.name}
     upload_info = json.dumps(upload_info)
 
     return HttpResponse(upload_info, content_type="application/json")

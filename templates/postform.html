@@ -19,7 +19,8 @@
 <script type="text/javascript" src="/static/js/simditor-2.3.5/scripts/hotkeys.min.js">
 </script><script type="text/javascript" src="/static/js/simditor-2.3.5/scripts/uploader.js">
 </script><script type="text/javascript" src="/static/js/simditor-2.3.5/scripts/simditor.js"></script>
-
+<link rel="stylesheet" type="text/css" href="/static/js/simditor-2.3.5/emoji/styles/simditor-emoji.css" />
+<script src="/static/js/simditor-2.3.5/emoji/lib/simditor-emoji.js"></script>
 
     <script>
         $(function() {
@@ -27,10 +28,25 @@
             var editor = new Simditor({
                     textarea: $('#editor_textarea'),
                     toolbarFloat: false,
+                    toolbar: ['title','bold','italic','underline','strikethrough','fontScale','color','ol'
+                        ,'ul','blockquote','code','table','link','image','hr','indent','outdent','alignment','emoji',
+                    ],
+                    emoji: {
+                        imagePath: '/static/js/simditor-2.3.5/emoji/images/emoji/',
+                        images: ['smile.png','smiley.png','laughing.png',
+                        'blush.png','heart_eyes.png','smirk.png','flushed.png','grin.png','wink.png',
+                        'kissing_closed_eyes.png','stuck_out_tongue_winking_eye.png','stuck_out_tongue.png',
+                        'sleeping.png','worried.png','expressionless.png','sweat_smile.png','cold_sweat.png',
+                        'joy.png','sob.png','angry.png','mask.png','scream.png','sunglasses.png','heart.png',
+                        'broken_heart.png','star.png','anger.png','exclamation.png','question.png','zzz.png',
+                        'thumbsup.png','thumbsdown.png','ok_hand.png','punch.png','v.png','clap.png','muscle.png',
+                        'pray.png','skull.png','trollface.png' ],
+                    },
                     upload:{
                         url:'/myadmin/upload/files', /* 注意myadmin前面的斜杠不能省掉，这是相对于根目录的*/
                         filekey:'upload_file', /* 相当于html标签里面的name值 */
                     },
+                    imageButton: 'upload',
             });
         });
 
