@@ -1,11 +1,31 @@
-django
-mysql
-gettext     # 电脑里有安装包
-
-channels       2.1.0
-channels-redis 2.3.2
-
-Pillow
-PyMySQL
-asgi-redis     1.4.3
+aioredis==1.2.0
+asgi-redis==1.4.3
 asgiref==2.3.2
+async-timeout==3.0.1
+attrs==18.2.0
+autobahn==18.12.1
+Automat==0.7.0
+channels==2.1.0
+channels-redis==2.3.2
+constantly==15.1.0
+daphne==2.2.4
+Django==2.0
+django-js-asset==1.1.0
+django-tinymce==2.7.0
+dwebsocket==0.5.10
+hiredis==0.3.1
+hyperlink==18.0.0
+idna==2.8
+image==1.5.27
+incremental==17.5.0
+msgpack==0.5.6
+msgpack-python==0.5.6
+Pillow==5.3.0
+PyHamcrest==1.9.0
+PyMySQL==0.9.3
+pytz==2018.7
+redis==2.10.6
+six==1.12.0
+Twisted==18.9.0
+txaio==18.8.1
+zope.interface==4.6.0

@@ -129,14 +129,11 @@
 
               <!--返回-->
              document.querySelector('.header').querySelector('#return').onclick = function(){
-                window.location.replace('/user/');
+                window.location.replace('/users/');
              }
 
 
-            var roomName = document.querySelector('#room_name').value;
-            var chatSocket = new WebSocket(
-                "ws://" + window.location.host + "/ws/chat/" + roomName + "/");
-
+            var chatSocket = new WebSocket("ws://" + window.location.host + "/echo/" + $('#userid').val() + "/" + $('#friendid').val());
 
             var RHeight = window.screen.availHeight * 0.6;
             $("#container1").height(RHeight);
@@ -156,30 +153,29 @@
             var img = document.querySelector('#container1').querySelector('.content').querySelector('img');
             var span = document.querySelector('#container1').querySelector('.content').querySelector('span')
 
+
+            <!--导入聊天记录-->
+            var old_chat_message = {{ old_chat_message | safe}};
+            for(var i = 0;i<old_chat_message.length;i++){
+                <!--# 判断是否为以前自己发的数据-->
+                if(old_chat_message[i][0] == 'True'){
+                    $(".content").append('<li><img src="'+ userface +'" class="face16" style="float: right;"><span style="float: right;background: #7cfc00;">'+ old_chat_message[i][1] +'</span></li>');
+                }
+                else{
+                    $(".content").append('<li><img src="'+ friendface +'" class="face16" style="float: left;"><span style="float: left;background: #fff;">'+ old_chat_message[i][1] +'</span></li>');
+                }
+            }
+
             chatSocket.onmessage = function(e) {
                 var data = JSON.parse(e.data);
                 var message = data['message'];
-                var is_read_mysql = data['is_read_mysql'];
-                if(is_read_mysql == 'yes'){
-                    for(var i = 0;i<message.length;i++){
-                        <!--# 判断是否为以前自己发的数据-->
-                        if(message[i][0]){
-                            $(".content").append('<li><img src="'+ userface +'" class="face16" style="float: right;"><span style="float: right;background: #7cfc00;">'+ message[i][1] +'</span></li>');
-                        }
-                        else{
-                            $(".content").append('<li><img src="'+ friendface +'" class="face16" style="float: left;"><span style="float: left;background: #fff;">'+ message[i][1] +'</span></li>');
-                        }
-                    }
+                var is_write = data['is_write'];
+                <!--# 判断是否为以前自己发的数据-->
+                if(is_write){
+                    $(".content").append('<li><img src="'+ userface +'" class="face16" style="float: right;"><span style="float: right;background: #7cfc00;">'+ message +'</span></li>');
                 }
                 else{
-                    var is_write = data['is_write'];
-                    <!--# 判断是否为以前自己发的数据-->
-                    if(is_write){
-                        $(".content").append('<li><img src="'+ userface +'" class="face16" style="float: right;"><span style="float: right;background: #7cfc00;">'+ message +'</span></li>');
-                    }
-                    else{
-                        $(".content").append('<li><img src="'+ friendface +'" class="face16" style="float: left;"><span style="float: left;background: #fff;">'+ message +'</span></li>');
-                    }
+                    $(".content").append('<li><img src="'+ friendface +'" class="face16" style="float: left;"><span style="float: left;background: #fff;">'+ message +'</span></li>');
                 }
 
                 // 内容过多时,将滚动条放置到最底端
@@ -207,7 +203,7 @@
 
                     chatSocket.send(JSON.stringify({
                         'message': message,
-                        'own': {{ user_id }}
+                        'own': {{ userid }}
                     }));
 
                     text.value = '';
@@ -233,7 +229,9 @@
         <div class="footer1">
             <input id="chat-message-input" type="text" placeholder="说点什么吧...">
 
-            <input type="hidden" id="room_name" value={{ room_name_json }}>
+            <input type="hidden" id="userid" value="{{ userid }}"/>
+
+            <input type="hidden" id="friendid" value="{{ friendid }}"/>
 
             <input type="hidden" id="user_face" value={{ user_face|face16 }}>
 

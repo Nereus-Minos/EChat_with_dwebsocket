@@ -19,6 +19,9 @@ urlpatterns = [
 
     url(r'^friend/chat/(?P<_username>[a-zA-Z\-_\d\u4E00-\u9FA5]+)', views.friend_chat, name="tmitter-mvc-views-friend_chat"),   # chat
 
+    url(r'^echo/(?P<userid>[0-9]+)/(?P<friendid>[0-9]+)$', views.echo, name='echo'),
+
+
     url(r'^write_blog/(?P<_username>[a-zA-Z\-_\d\u4E00-\u9FA5]+)/$', views.write_blog, name="tmitter-mvc-views-write_blog"),  # 写微说
     url(r'^write_blog/$', views.write_blog),      # 写微说
     url(r'^handle_write_blog/$', views.handle_write_blog),      # 处理写微说函数

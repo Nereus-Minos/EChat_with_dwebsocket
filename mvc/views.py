@@ -1,7 +1,15 @@
 # -*- coding: utf-8 -*-
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
-from mvc.models import Note, User, Category, Area
+
+
+from dwebsocket.decorators import accept_websocket, require_websocket
+from collections import defaultdict
+
+import json
+
+
+from mvc.models import Note, User, Category, Area, Chatmessage
 
 from django.utils.translation import ugettext as _
 from django.template import Context, loader
@@ -672,41 +680,93 @@ def friends_list(request, _page_index=1):
 
 
 def friend_chat(request, _username):
-    _user2friend = 'yes'
+
     _ischat = True
     _friend_id = User.objects.get(username=_username).id
     _user_id = __user_id(request)
-    user_id = _user_id
     _islogin = __is_login(request)
 
     user_face = str(User.objects.get(id=_user_id).face)
     friend_face = str(User.objects.get(id=_friend_id).face)
 
 
-    # 先转为字符串拼接后转为数字
-    if _user_id >= _friend_id:
-        _user2friend = 'no'
-        middle = _friend_id
-        _friend_id = _user_id
-        _user_id = middle
-    _id = str(_user2friend) + '_' + str(_user_id) + '_' + str(_friend_id)
+    # 读取之前的聊天记录
+    try:
+        # 多个过滤器逐个调用表示逻辑与关系，同sql语句中where部分的and关键字。
+        from django.db.models import Q
+        old_chat_message = [[str(messageall.write_id == int(_user_id)), messageall.message] for messageall in
+                   Chatmessage.objects.filter(Q(Q(user_id=_user_id) & Q(friend_id=_friend_id)) |
+                                              Q(Q(friend_id=_user_id) & Q(user_id=_friend_id)))
+                       .filter(user_id__in=[_user_id, _friend_id])]
+
+    except:
+        old_chat_message = '数据库查询错误'
+
 
     # body content
     _template = loader.get_template('chat2.html')
 
     _context = {
         'islogin': _islogin,
-        'room_name_json': _id,
-        'user_id': user_id,
+        'userid': str(_user_id),
+        'friendid': str(_friend_id),
         'username': _username,
         'ischat': _ischat,
         'user_face': user_face,
         'friend_face': friend_face,
+        'old_chat_message': old_chat_message,
     }
 
     _output = _template.render(_context)
 
     return HttpResponse(_output)
+
+
+# 保存所有接入的用户地址
+allconn = defaultdict(list)
+
+
+# 处理聊天中
+@accept_websocket
+def echo(request, userid, friendid):
+    # 声明全局变量
+    global allconn
+    # 将链接(请求？)存入全局字典中
+    allconn[str(userid)] = request.websocket
+
+    print(request.websocket)
+
+   # 遍历请求地址中的消息
+    for message in request.websocket:
+
+        # message为json格式,先解析,添加内容后,在打包成json
+        message = json.loads(message)
+
+        add_user_data = {
+            "is_write": True,       # 是否为发送者
+        }
+
+        user_data = json.dumps(dict(message, **add_user_data))
+
+        # 将信息发至自己的聊天框
+        request.websocket.send(user_data)
+
+        # 将信息发至朋友的聊天框
+
+        add_friend_data = {
+            "is_write": False,       # 是否为发送者
+        }
+
+        friend_data = json.dumps(dict(message, **add_friend_data))
+
+        if str(friendid) in allconn.keys():
+            allconn[str(friendid)].send(friend_data)
+
+        # 将消息写入数据库
+        _chatmessage = Chatmessage(message=message['message'], write_id=userid,
+                                   user_id=userid, friend_id=friendid)
+        _chatmessage.save()
+
 
 
 @csrf_exempt

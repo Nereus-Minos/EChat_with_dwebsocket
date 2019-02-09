@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'mvc',
     'utils',
-    'channels',
 ]
 
 MIDDLEWARE = [
@@ -174,17 +173,3 @@ LOCALE_PATHS = (
 
 # Default user face
 DEFAULT_FACE = '/static/images/face%d.png'
-
-
-# channels配置
-ASGI_APPLICATION = 'tmitter.routing.application'
-
-# Channels
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [('127.0.0.1', 6379)],
-        },
-    },
-}
